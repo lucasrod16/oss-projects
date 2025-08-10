@@ -15,7 +15,6 @@ spec:
   tls:
     - hosts:
         - osscontribute.dev
-      secretName: oss-projects-tls
   rules:
     - host: osscontribute.dev
       http:
