@@ -1,4 +1,4 @@
-name: Deploy app
+name: Release
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 jobs:
-  deploy-app:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,24 +29,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
-      - name: Install terraform
-        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
-        with:
-          terraform_wrapper: false
-
-      - name: Install just
-        uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff # v3.0.0
-
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@a6f90b1f127823b31d4d4a8d96047790581349bd # v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy
-        working-directory: deploy
-        env:
-          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
-        run: just deploy
+      - name: Build and Push Container Image
+        run: docker buildx build --push --platform linux/amd64 -t lucasrod96/oss-projects:${{ github.ref_name }} .
 
       - name: Create GitHub Release
         env:
