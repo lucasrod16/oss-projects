@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oss-projects
+  namespace: oss-projects
+  labels:
+    app: oss-projects
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+    traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - osscontribute.dev
+      secretName: oss-projects-tls
+  rules:
+    - host: osscontribute.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: oss-projects
+                port:
+                  number: 80
