@@ -1,6 +1,13 @@
+clean:
+	rm -rf ./bin
+
 build-dev:
 	npm --prefix ui run build
 	CGO_ENABLED=0 go build -ldflags="-s -w" -o ./bin/api
+
+build-release:
+	npm --prefix ui run build
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ./bin/api
 
 test-unit:
 	@echo "================RUNNING UNIT TESTS================\n"
