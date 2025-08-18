@@ -4,11 +4,11 @@
   "private": true,
   "devDependencies": {
     "@eslint/js": "9.33.0",
-    "@types/node": "24.2.1",
-    "@types/react": "19.1.9",
+    "@types/node": "24.3.0",
+    "@types/react": "19.1.10",
     "@types/react-dom": "19.1.7",
     "cypress": "14.5.4",
-    "esbuild": "0.25.8",
+    "esbuild": "0.25.9",
     "eslint": "9.33.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
@@ -16,7 +16,7 @@
     "globals": "16.3.0",
     "prettier": "3.6.2",
     "typescript": "5.9.2",
-    "typescript-eslint": "8.39.0"
+    "typescript-eslint": "8.39.1"
   },
   "dependencies": {
     "@emotion/styled": "11.14.1",
