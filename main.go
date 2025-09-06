@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/lucasrod16/oss-projects/internal/api"
 	"github.com/lucasrod16/oss-projects/internal/cache"
-	ihttp "github.com/lucasrod16/oss-projects/internal/http"
 )
 
 //go:embed ui/build/*
@@ -55,9 +55,9 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.Handle("GET /", http.FileServer(http.FS(fs)))
-	mux.Handle("GET /repos", ihttp.GetRepos(c))
+	mux.Handle("GET /repos", api.GetRepos(c))
 
-	rl := ihttp.NewRateLimiter()
+	rl := api.NewRateLimiter()
 	limitedMux := rl.Limit(mux)
 
 	server := &http.Server{
