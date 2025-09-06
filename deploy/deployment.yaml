@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: oss-projects
-          image: lucasrod96/oss-projects:v0.1.7@sha256:e5d8c33e13684d6c24b5394e9e79c14dbfbca6f71fa6b00f4d6a02ec248f1bab
+          image: lucasrod96/oss-projects:v0.1.8@sha256:77cb9324b21a3b8c5e528901f56fd0014f0833be7bb7b31cd66ccbf7ce524322
           ports:
             - containerPort: 8080
           resources:
