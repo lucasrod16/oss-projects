@@ -1,26 +1,27 @@
-import React, { useState } from "react";
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import React from "react";
+import {
+	Box,
+	FormControl,
+	InputLabel,
+	MenuItem,
+	Select,
+	SelectChangeEvent,
+} from "@mui/material";
 import { Language } from "../languages.ts";
 
 type FilterProps = {
-	selectedLanguages: Language[];
+	selectedLanguage: Language | "";
 	availableLanguages: Language[];
-	onFilterChange: (selectedLanguages: Language[]) => void;
+	onFilterChange: (language: Language | "") => void;
 };
 
-const Filter: React.FC<FilterProps> = ({ availableLanguages, onFilterChange }) => {
-	const [selectedLanguage, setSelectedLanguage] = useState<Language | "">("");
-
-	const handleDropdownChange = (event: SelectChangeEvent<Language | "">) => {
-		const selected = event.target.value as Language | "";
-
-		if (selected === "") {
-			setSelectedLanguage("");
-			onFilterChange([]);
-		} else {
-			setSelectedLanguage(selected);
-			onFilterChange([selected]);
-		}
+const Filter: React.FC<FilterProps> = ({
+	selectedLanguage,
+	availableLanguages,
+	onFilterChange,
+}) => {
+	const handleChange = (event: SelectChangeEvent<Language | "">) => {
+		onFilterChange(event.target.value as Language | "");
 	};
 
 	return (
@@ -30,46 +31,43 @@ const Filter: React.FC<FilterProps> = ({ availableLanguages, onFilterChange }) =
 				<Select
 					labelId="language-select-label"
 					id="language-select"
+					data-testid="language-filter"
 					value={selectedLanguage}
 					label="Language"
-					onChange={handleDropdownChange}
+					onChange={handleChange}
 					sx={{
-						backgroundColor: "secondary.main",
+						bgcolor: "secondary.main",
 						color: "text.primary",
 						borderRadius: 1,
-						"& .MuiOutlinedInput-notchedOutline": {
-							borderColor: "transparent",
-						},
-						"&:hover .MuiOutlinedInput-notchedOutline": {
-							borderColor: "primary.main",
-						},
-						"&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-							borderColor: "primary.main",
-						},
+						"& .MuiOutlinedInput-notchedOutline": { borderColor: "transparent" },
+						"&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "primary.main" },
+						"&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "primary.main" },
 					}}
 					MenuProps={{
 						PaperProps: {
 							sx: {
-								backgroundColor: "#2d333b",
+								bgcolor: "#2d333b",
 								color: "text.primary",
 								"& .MuiMenuItem-root": {
-									"&:hover": {
-										backgroundColor: "#444c56",
-									},
+									"&:hover": { bgcolor: "#444c56" },
 									"&.Mui-selected": {
-										backgroundColor: "#444c56",
-										"&:hover": {
-											backgroundColor: "#586069",
-										},
+										bgcolor: "#444c56",
+										"&:hover": { bgcolor: "#586069" },
 									},
 								},
 							},
 						},
 					}}
 				>
-					<MenuItem value="">All Languages</MenuItem>
+					<MenuItem value="" data-testid="all-languages-option">
+						All Languages
+					</MenuItem>
 					{availableLanguages.map((language) => (
-						<MenuItem key={language} value={language}>
+						<MenuItem
+							key={language}
+							value={language}
+							data-testid={`language-option-${language}`}
+						>
 							{language}
 						</MenuItem>
 					))}

@@ -24,6 +24,44 @@ describe("Filter Dropdown", () => {
 			cy.get("a.MuiCard-root").should("have.length.greaterThan", 0);
 		});
 	});
+
+	it("languages should be displayed in alphabetical order", () => {
+		cy.visit("/");
+		cy.get("#language-select").click();
+
+		// Get all language options except "All Languages"
+		cy.get('li[role="option"]')
+			.not(':contains("All Languages")')
+			.then(($options) => {
+				const languages = Array.from($options).map(
+					(el) => el.textContent?.trim() || ""
+				);
+				const sortedLanguages = [...languages].sort();
+
+				// Compare the actual order with the sorted order
+				expect(languages).to.deep.equal(sortedLanguages);
+			});
+	});
+
+	it("should filter repositories by selected language using data-testid", () => {
+		cy.visit("/");
+
+		// Open the filter dropdown
+		cy.get('[data-testid="language-filter"]').click();
+
+		// Click on a specific language (e.g., TypeScript if available)
+		cy.get('[data-testid^="language-option-"]').first().click();
+
+		// Verify that cards are displayed
+		cy.get("a.MuiCard-root").should("have.length.greaterThan", 0);
+
+		// Reset to "All Languages"
+		cy.get('[data-testid="language-filter"]').click();
+		cy.get('[data-testid="all-languages-option"]').click();
+
+		// Verify that more cards are displayed when showing all languages
+		cy.get("a.MuiCard-root").should("have.length", 20);
+	});
 });
 
 describe("Pagination", () => {
