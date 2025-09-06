@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
 	"sync"
 	"time"
@@ -54,6 +54,6 @@ func (c *Cache) RepoData(ctx context.Context) error {
 	}
 
 	c.Set(data)
-	log.Println("Successfully loaded GitHub data from gist into the in-memory cache.")
+	slog.Info("Successfully loaded GitHub data from gist into the in-memory cache.")
 	return nil
 }

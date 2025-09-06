@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"net/smtp"
 	"os"
 )
@@ -33,10 +33,12 @@ func main() {
 	password := os.Getenv("GMAIL_APP_PASSWORD")
 	workflowURL := os.Getenv("WORKFLOW_URL")
 	if password == "" {
-		log.Fatal("GMAIL_APP_PASSWORD environment variable must be set.")
+		slog.Error("GMAIL_APP_PASSWORD environment variable must be set.")
+		os.Exit(1)
 	}
 	if workflowURL == "" {
-		log.Fatal("WORKFLOW_URL environment variable must be set.")
+		slog.Error("WORKFLOW_URL environment variable must be set.")
+		os.Exit(1)
 	}
 	email := email{
 		from:     "lucas.rodriguez9616@gmail.com",
@@ -52,7 +54,8 @@ func main() {
 		),
 	}
 	if err := email.Send(password); err != nil {
-		log.Fatalf("failed to send email: %v", err)
+		slog.Error("failed to send email", "error", err)
+		os.Exit(1)
 	}
-	log.Println("Email sent successfully!")
+	slog.Info("Email sent successfully!")
 }
