@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"slices"
 	"strings"
@@ -33,14 +33,16 @@ func main() {
 
 	token := os.Getenv("GIST_TOKEN")
 	if token == "" {
-		log.Fatal("GIST_TOKEN environment variable is required")
+		slog.Error("GIST_TOKEN environment variable is required")
+		os.Exit(1)
 	}
 
 	client := github.NewClient(nil).WithAuthToken(token)
 
 	licenses, err := licenseKeys(ctx, client)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("", "error", err)
+		os.Exit(1)
 	}
 
 	const baseQuery = "is:public archived:false good-first-issues:>=10 help-wanted-issues:>=10 stars:>=500"
@@ -51,17 +53,19 @@ func main() {
 	// https://github.com/orgs/community/discussions/24361
 	repoMap := make(map[string]repo)
 
-	log.Println("fetching GitHub repo data...")
+	slog.Info("fetching GitHub repo data...")
 	for page := 1; ; page++ {
 		opts.Page = page
 		opts.PerPage = 100
 
 		result, resp, err := client.Search.Repositories(ctx, query, opts)
 		if err != nil {
-			log.Fatalf("error searching repos: %v", err)
+			slog.Error("error searching repos", "error", err)
+			os.Exit(1)
 		}
 		if len(result.Repositories) == 0 {
-			log.Fatal("unexpected error: no GitHub repositories found matching the specified search criteria")
+			slog.Error("unexpected error: no GitHub repositories found matching the specified search criteria")
+			os.Exit(1)
 		}
 
 		for _, githubRepo := range result.Repositories {
@@ -94,7 +98,8 @@ func main() {
 
 	data, err := json.MarshalIndent(uniqueRepos, "", "  ")
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("", "error", err)
+		os.Exit(1)
 	}
 
 	gist := &github.Gist{
@@ -107,10 +112,11 @@ func main() {
 
 	_, _, err = client.Gists.Edit(ctx, gistID, gist)
 	if err != nil {
-		log.Fatalf("error updating gist: %v", err)
+		slog.Error("error updating gist", "error", err)
+		os.Exit(1)
 	}
 
-	log.Printf("Successfully fetched and stored GitHub repo data to gist: %s", gistID)
+	slog.Info("Successfully fetched and stored GitHub repo data to gist", "gistID", gistID)
 }
 
 func licenseKeys(ctx context.Context, client *github.Client) (string, error) {

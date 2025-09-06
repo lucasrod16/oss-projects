@@ -1,7 +1,7 @@
 package http
 
 import (
-	"log"
+	"log/slog"
 	"net"
 	"net/http"
 	"strings"
@@ -91,7 +91,7 @@ func getClientIP(r *http.Request) string {
 
 	ip, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
-		log.Printf("could not determine client IP: %v\n", err)
+		slog.Error("could not determine client IP", "error", err)
 		return ""
 	}
 	return ip
